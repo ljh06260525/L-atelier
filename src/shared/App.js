@@ -1,0 +1,65 @@
+import React from "react";
+import './App.css';
+import styled from "styled-components";
+
+import {BrowserRouter, Route} from "react-router-dom";
+import {ConnectedRouter} from "connected-react-router";
+import {useDispatch} from "react-redux";
+import {actionCreators as userActions} from "../redux/modules/user";
+import {history} from "../redux/configStore";
+
+import Main from "../pages/Main";
+//import LoginSam from "../pages/LoginSam";
+import Detail from "../pages/Detail";
+import Cart from "../pages/Cart";
+//import SignUp from '../pages/Signup';
+import Header from "../components/Header";
+import Footer from "../components/Footer";
+import {getCookie} from './Cookie';
+
+import Test from "../pages/test";
+import PostListPage from "../pages/PostListPage";
+import LoginPage from "../pages/LoginPage";
+import RegisterPage from "../pages/RegisterPage";
+import WritePage from "../pages/WritePage";
+import PostPage from "../pages/PostPage";
+import LectureRegisterPage from "../pages/LectureRegisterPage";
+import ClassRegister from "../pages/ClassRegister";
+
+//{/*<Route path="/login" exact component={LoginSam}/>*/}
+
+function App() {
+    const dispatch = useDispatch();
+
+    const token = getCookie("is_login")
+
+    React.useEffect(() => {
+        if (token) { //토큰이 존재하면 로그인을 유지 API 호출
+            dispatch(userActions.loginCheckDB());
+        }
+    }, [])
+
+    return ( //header, footer는 페이지 이동과 관계없이 보여짐.
+        <React.Fragment>
+            <Header/>
+            <ConnectedRouter history={history}>
+                <Route path="/" exact component={Main}/>
+                <Route path="/detail/:id" exact component={Detail}/>
+                <Route path="/cart" exact component={Cart}/>
+                <Route path="/test" exact component={Test}/>
+                <Route component={PostListPage} path={['/@:username', '/']} exact/>
+                <Route path="/login" exact component={LoginPage}/>
+                <Route component={RegisterPage} path="/register"/>
+                <Route component={WritePage} path="/write"/>
+                <Route component={PostPage} path="/@:username/:postId"/>
+                <Route component={LectureRegisterPage} path="/LectureRegister"/>
+                <Route component={ClassRegister} path="/ClassRegister"/>
+            </ConnectedRouter>
+            <Footer/>
+        </React.Fragment>
+    );
+}
+
+export default App;
+
+/*<Route path="/signup" exact component={SignUp}/>*/
